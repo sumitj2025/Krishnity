@@ -1,20 +1,52 @@
 const imageInput = document.getElementById('imageInput');
-const productNameInput = document.getElementById('productName');
-const priceInput = document.getElementById('price');
-const offerInput = document.getElementById('offer');
-const brandInput = document.getElementById('brand');
 const generateBtn = document.getElementById('generateBtn');
 const downloadAllBtn = document.getElementById('downloadAllBtn');
 const gallery = document.getElementById('gallery');
 
 const templates = [
-  { name: 'Main Hero', colors: ['#f97316', '#ef4444'], badge: 'Bestseller' },
-  { name: 'Offer Focus', colors: ['#8b5cf6', '#06b6d4'], badge: 'Limited Offer' },
-  { name: 'Premium Look', colors: ['#0ea5e9', '#1d4ed8'], badge: 'Top Quality' },
-  { name: 'Trust Card', colors: ['#10b981', '#0f766e'], badge: 'Trusted by Buyers' },
-  { name: 'Fast Dispatch', colors: ['#e11d48', '#7e22ce'], badge: 'Quick Dispatch' },
-  { name: 'Brand Story', colors: ['#f59e0b', '#ea580c'], badge: 'New Arrival' },
+  {
+    name: 'Main Hero',
+    colors: ['#f97316', '#ef4444'],
+    badge: 'Bestseller',
+    offer: '20% OFF',
+  },
+  {
+    name: 'Offer Focus',
+    colors: ['#8b5cf6', '#06b6d4'],
+    badge: 'Limited Offer',
+    offer: 'FREE SHIPPING',
+  },
+  {
+    name: 'Premium Look',
+    colors: ['#0ea5e9', '#1d4ed8'],
+    badge: 'Top Quality',
+    offer: 'Premium Pick',
+  },
+  {
+    name: 'Trust Card',
+    colors: ['#10b981', '#0f766e'],
+    badge: 'Trusted by Buyers',
+    offer: 'Shop Now',
+  },
+  {
+    name: 'Fast Dispatch',
+    colors: ['#e11d48', '#7e22ce'],
+    badge: 'Quick Dispatch',
+    offer: 'Dispatch in 24h',
+  },
+  {
+    name: 'Brand Story',
+    colors: ['#f59e0b', '#ea580c'],
+    badge: 'New Arrival',
+    offer: 'Hot Trend',
+  },
 ];
+
+const defaultData = {
+  productName: 'Stylish Product',
+  price: '499',
+  brand: 'Meesho Store',
+};
 
 let productImage = null;
 let generated = [];
@@ -40,15 +72,8 @@ generateBtn.addEventListener('click', () => {
     return;
   }
 
-  const data = {
-    productName: productNameInput.value.trim() || 'Stylish Product',
-    price: priceInput.value.trim() || '499',
-    offer: offerInput.value.trim() || '20% OFF',
-    brand: brandInput.value.trim() || 'Krishnity Store',
-  };
-
   generated = templates.map((template, index) =>
-    buildCanvas(template, data, productImage, index)
+    buildCanvas(template, defaultData, productImage, index)
   );
   renderGallery(generated);
   downloadAllBtn.disabled = false;
@@ -93,11 +118,11 @@ function buildCanvas(template, data, image, idx) {
   ctx.drawImage(image, imgX, imgY, bounds.w, bounds.h);
 
   drawTag(ctx, template.badge, 70, 70);
-  drawTag(ctx, `${data.offer}`, 750, 70, true);
+  drawTag(ctx, template.offer, 700, 70, true);
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 56px sans-serif';
-  ctx.fillText(data.productName.slice(0, 26), 70, 860);
+  ctx.fillText(data.productName, 70, 860);
 
   ctx.font = 'bold 64px sans-serif';
   ctx.fillText(`₹${data.price}`, 70, 945);
