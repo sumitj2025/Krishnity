@@ -4,49 +4,13 @@ const downloadAllBtn = document.getElementById('downloadAllBtn');
 const gallery = document.getElementById('gallery');
 
 const templates = [
-  {
-    name: 'Main Hero',
-    colors: ['#f97316', '#ef4444'],
-    badge: 'Bestseller',
-    offer: '20% OFF',
-  },
-  {
-    name: 'Offer Focus',
-    colors: ['#8b5cf6', '#06b6d4'],
-    badge: 'Limited Offer',
-    offer: 'FREE SHIPPING',
-  },
-  {
-    name: 'Premium Look',
-    colors: ['#0ea5e9', '#1d4ed8'],
-    badge: 'Top Quality',
-    offer: 'Premium Pick',
-  },
-  {
-    name: 'Trust Card',
-    colors: ['#10b981', '#0f766e'],
-    badge: 'Trusted by Buyers',
-    offer: 'Shop Now',
-  },
-  {
-    name: 'Fast Dispatch',
-    colors: ['#e11d48', '#7e22ce'],
-    badge: 'Quick Dispatch',
-    offer: 'Dispatch in 24h',
-  },
-  {
-    name: 'Brand Story',
-    colors: ['#f59e0b', '#ea580c'],
-    badge: 'New Arrival',
-    offer: 'Hot Trend',
-  },
+  { name: 'Orange Border', bg: ['#fff7ed', '#ffedd5'], border: '#f97316' },
+  { name: 'Purple Border', bg: ['#faf5ff', '#f3e8ff'], border: '#8b5cf6' },
+  { name: 'Blue Border', bg: ['#eff6ff', '#dbeafe'], border: '#2563eb' },
+  { name: 'Green Border', bg: ['#ecfdf5', '#d1fae5'], border: '#059669' },
+  { name: 'Pink Border', bg: ['#fdf2f8', '#fce7f3'], border: '#db2777' },
+  { name: 'Teal Border', bg: ['#f0fdfa', '#ccfbf1'], border: '#0f766e' },
 ];
-
-const defaultData = {
-  productName: 'Stylish Product',
-  price: '499',
-  brand: 'Meesho Store',
-};
 
 let productImage = null;
 let generated = [];
@@ -73,7 +37,7 @@ generateBtn.addEventListener('click', () => {
   }
 
   generated = templates.map((template, index) =>
-    buildCanvas(template, defaultData, productImage, index)
+    buildCanvas(template, productImage, index)
   );
   renderGallery(generated);
   downloadAllBtn.disabled = false;
@@ -83,60 +47,52 @@ downloadAllBtn.addEventListener('click', () => {
   generated.forEach((item, idx) => {
     const a = document.createElement('a');
     a.href = item.canvas.toDataURL('image/png');
-    a.download = `meesho-image-${idx + 1}.png`;
+    a.download = `meesho-border-image-${idx + 1}.png`;
     a.click();
   });
 });
 
-function buildCanvas(template, data, image, idx) {
+function buildCanvas(template, image, idx) {
   const canvas = document.createElement('canvas');
   canvas.width = 1080;
   canvas.height = 1080;
 
   const ctx = canvas.getContext('2d');
   const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  grad.addColorStop(0, template.colors[0]);
-  grad.addColorStop(1, template.colors[1]);
+  grad.addColorStop(0, template.bg[0]);
+  grad.addColorStop(1, template.bg[1]);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = 'rgba(255,255,255,0.15)';
-  ctx.fillRect(55, 55, 970, 970);
+  const imageBounds = fitInside(image.width, image.height, 820, 820);
+  const imgX = (canvas.width - imageBounds.w) / 2;
+  const imgY = (canvas.height - imageBounds.h) / 2;
 
-  const bounds = fitInside(image.width, image.height, 600, 620);
-  const imgX = (canvas.width - bounds.w) / 2;
-  const imgY = 180;
+  const borderPadding = 24;
+  const borderRadius = 36;
 
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.25)';
-  ctx.shadowBlur = 45;
-  roundRect(ctx, imgX - 12, imgY - 12, bounds.w + 24, bounds.h + 24, 24);
+  roundRect(
+    ctx,
+    imgX - borderPadding,
+    imgY - borderPadding,
+    imageBounds.w + borderPadding * 2,
+    imageBounds.h + borderPadding * 2,
+    borderRadius
+  );
   ctx.fillStyle = 'white';
   ctx.fill();
+
+  ctx.lineWidth = 18;
+  ctx.strokeStyle = template.border;
+  ctx.stroke();
+
+  ctx.save();
+  roundRect(ctx, imgX, imgY, imageBounds.w, imageBounds.h, 24);
+  ctx.clip();
+  ctx.drawImage(image, imgX, imgY, imageBounds.w, imageBounds.h);
   ctx.restore();
 
-  ctx.drawImage(image, imgX, imgY, bounds.w, bounds.h);
-
-  drawTag(ctx, template.badge, 70, 70);
-  drawTag(ctx, template.offer, 700, 70, true);
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 56px sans-serif';
-  ctx.fillText(data.productName, 70, 860);
-
-  ctx.font = 'bold 64px sans-serif';
-  ctx.fillText(`₹${data.price}`, 70, 945);
-
-  ctx.font = '500 36px sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText(data.brand, 70, 1005);
-
-  ctx.textAlign = 'right';
-  ctx.font = '600 34px sans-serif';
-  ctx.fillText(`Style ${idx + 1}`, 1005, 1005);
-  ctx.textAlign = 'left';
-
-  return { template: template.name, canvas };
+  return { template: `${template.name} ${idx + 1}`, canvas };
 }
 
 function renderGallery(items) {
@@ -160,7 +116,7 @@ function renderGallery(items) {
     downloadBtn.addEventListener('click', () => {
       const a = document.createElement('a');
       a.href = item.canvas.toDataURL('image/png');
-      a.download = `meesho-image-${idx + 1}.png`;
+      a.download = `meesho-border-image-${idx + 1}.png`;
       a.click();
     });
 
@@ -168,19 +124,6 @@ function renderGallery(items) {
     tile.appendChild(footer);
     gallery.appendChild(tile);
   });
-}
-
-function drawTag(ctx, text, x, y, dark = false) {
-  ctx.font = '600 34px sans-serif';
-  const w = ctx.measureText(text).width + 42;
-  const h = 62;
-
-  roundRect(ctx, x, y, w, h, 31);
-  ctx.fillStyle = dark ? 'rgba(15,23,42,0.86)' : 'rgba(255,255,255,0.9)';
-  ctx.fill();
-
-  ctx.fillStyle = dark ? '#ffffff' : '#0f172a';
-  ctx.fillText(text, x + 21, y + 41);
 }
 
 function fitInside(srcW, srcH, maxW, maxH) {
