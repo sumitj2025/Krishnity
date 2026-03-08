@@ -1,0 +1,104 @@
+:root {
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --text: #1f2a44;
+  --muted: #5f6b84;
+  --accent: #2c6bed;
+  --ok: #1ea971;
+  --border: #d9e1ef;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 860px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+header h1 {
+  margin-bottom: 0.25rem;
+}
+
+header p {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+.tracker-card,
+.result {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 2px 12px rgba(18, 34, 68, 0.04);
+}
+
+#tracking-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+input,
+select,
+button {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  padding: 0.75rem;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}
+
+.result {
+  margin-top: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.route {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.stop {
+  border-left: 4px solid var(--accent);
+  padding-left: 0.75rem;
+}
+
+.stop.done {
+  border-left-color: var(--ok);
+}
+
+.stop .meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
